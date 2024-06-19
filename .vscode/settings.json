@@ -1,0 +1,11 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "always",
+        "source.fixAll.ruff": "always"
+    },
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
