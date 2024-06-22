@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, Depends, Form
+from fastapi import APIRouter, Depends, Form, HTTPException
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
-from database import get_db
-from crud import create_todo, get_todos, toggle_todo, delete_todo
+
+from todo.crud import create_todo, delete_todo, get_todos, toggle_todo
+from todo.database import get_db
 
 router = APIRouter()
 

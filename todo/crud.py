@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from models import ToDo
+
+from todo.models import ToDo
 
 
 def create_todo(db: Session, title: str):

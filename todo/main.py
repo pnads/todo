@@ -1,10 +1,11 @@
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
 import os
 
-from database import Base, engine
-from routers import todo
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+
+from todo.database import Base, engine
+from todo.routers import router
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -23,4 +24,4 @@ async def read_root():
 
 
 # Include routers
-app.include_router(todo.router)
+app.include_router(router)

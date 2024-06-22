@@ -2,8 +2,9 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database import Base, get_db
-from main import app
+
+from todo.database import Base, get_db
+from todo.main import app
 
 # Set up a separate database for testing
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test_todo.db"
