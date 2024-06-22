@@ -1,3 +1,5 @@
 # todo
 
-An app by Patrick Nadeau
+It's a todo app.
+
+🎉
