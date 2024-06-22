@@ -1,4 +1,6 @@
-from sqlalchemy import Boolean, Column, Integer, String
+import datetime
+
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
 
 from todo.database import Base
 
@@ -8,3 +10,4 @@ class ToDo(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     completed = Column(Boolean, default=False)
+    date_added = Column(DateTime, default=datetime.datetime.now(datetime.UTC))

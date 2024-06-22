@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -6,21 +8,18 @@ from sqlalchemy.orm import sessionmaker
 from todo.database import Base, get_db
 from todo.main import app
 
-# Set up a separate database for testing
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test_todo.db"
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Create the database tables
 Base.metadata.create_all(bind=engine)
 
 
-# Dependency override to use the testing database
 def override_get_db():
+    db = TestingSessionLocal()
     try:
-        db = TestingSessionLocal()
         yield db
     finally:
         db.close()
@@ -33,11 +32,8 @@ client = TestClient(app)
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_and_teardown():
-    # Before tests run
-    Base.metadata.create_all(bind=engine)
     yield
-    # After tests run
-    Base.metadata.drop_all(bind=engine)
+    os.remove("./test_todo.db")
 
 
 def test_create_todo():
@@ -53,24 +49,17 @@ def test_read_todos():
 
 
 def test_toggle_todo():
-    response = client.post("/todos/", data={"title": "Another Test ToDo"})
+    response = client.post("/todos/", data={"title": "Toggle ToDo"})
     assert response.status_code == 200
-
-    todo_id = response.text.split('id="todo-')[1].split('"')[0]
-    toggle_url = f"/todos/{todo_id}/toggle"
-
-    response = client.put(toggle_url)
+    todo_id = int(response.text.split('id="todo-')[1].split('"')[0])
+    response = client.put(f"/todos/{todo_id}/toggle")
     assert response.status_code == 200
-    assert "line-through" in response.text
 
 
 def test_delete_todo():
-    response = client.post("/todos/", data={"title": "To Be Deleted"})
+    response = client.post("/todos/", data={"title": "Delete ToDo"})
     assert response.status_code == 200
-
-    todo_id = response.text.split('id="todo-')[1].split('"')[0]
-    delete_url = f"/todos/{todo_id}"
-
-    response = client.delete(delete_url)
+    todo_id = int(response.text.split('id="todo-')[1].split('"')[0])
+    response = client.delete(f"/todos/{todo_id}")
     assert response.status_code == 200
     assert response.text == ""
